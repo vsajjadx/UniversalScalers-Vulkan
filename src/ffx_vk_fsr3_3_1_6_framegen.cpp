@@ -493,6 +493,7 @@ ffxVkFsr3_3_1_6FrameGenerationContextRecordPrepare(
      * a descriptor target underneath those commands. */
     context->prepared = true;
     context->frameId = info->frameId;
+    ffxVkFsr3_3_1_5BridgeBeginFrame(context->bridge, info->frameId);
     context->renderWidth = info->renderWidth;
     context->renderHeight = info->renderHeight;
     context->preparedColorImage = info->color.image;
@@ -634,6 +635,7 @@ ffxVkFsr3_3_1_6FrameGenerationContextRecordDispatch(
     dispatch.minMaxLuminance[0] = info->minLuminance;
     dispatch.minMaxLuminance[1] = info->maxLuminance;
     dispatch.frameID = info->frameId;
+    ffxVkFsr3_3_1_5BridgeBeginFrame(context->bridge, info->frameId);
     dispatch.dilatedDepth = context->dilatedDepth.resource;
     dispatch.dilatedMotionVectors = context->dilatedMotionVectors.resource;
     dispatch.reconstructedPrevDepth = context->reconstructedPreviousDepth.resource;
@@ -656,6 +658,7 @@ ffxVkFsr3_3_1_6FrameGenerationContextRetireFrame(
 {
     if (!context)
         return FFX_VK_FSR3_3_1_6_FRAMEGEN_ERROR_INVALID_ARGUMENT;
+    ffxVkFsr3_3_1_5BridgeRetireFrame(context->bridge, completedFrameId);
     if (context->prepared && context->frameId <= completedFrameId) {
         for (const FfxVkFsr3_3_1_5Resource resource : context->pendingImports)
             ffxVkFsr3_3_1_5BridgeReleaseImportedImage(context->bridge, resource);
